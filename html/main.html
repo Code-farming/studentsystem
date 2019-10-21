@@ -1,50 +1,112 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <title>班级管理系统</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/community.css">
-    <script src="js/jquery-3.4.1.min.js.js"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
+<!--导航栏-->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed glyphicon glyphicon-align-justify" data-toggle="collapse"
+            <button type="button" class="navbar-toggle collapsed glyphicon glyphicon-align-justify"
+                    data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">社区</span>
+                <span class="sr-only">首页</span>
             </button>
-            <a class="navbar-brand" href="/">社区</a>
+            <a class="navbar-brand" href="main.html">首页</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="搜索问题">
-                </div>
-                <button type="submit" class="btn btn-default">搜索</button>
-            </form>
             <ul class="nav navbar-nav navbar-right">
-                <li th:if="${session.user!=null}">
-                    <a href="/publish">发布</a>
-                </li>
-                <li class="dropdown" th:if="${session.user!=null}">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">
-                        <span th:text="${session.user.name}"></span>
+                        <span>发布</span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/profile/questions">我的问题</a></li>
-                        <li><a href="/logout">退出登录</a></li>
+                        <li><a href="#">发布作业</a></li>
+                        <li><a href="#">发布通知</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="notice.html">通知</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        <span id="name"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">我的信息</a>
+                        </li>
+                        <li><a href="#">修改密码</a></li>
+                        <li><a href="#">退出登录</a></li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<div class="container-fluid main">
+    <div class="row">
+        <!--侧边栏-->
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 nav-padding">
+            <div style="height: 750px">
+                <div style="padding: 20px;">
+                    <iframe id="myIframe" src="classmate.html"
+                            frameborder="1"
+                            width="900px"
+                            height="700px"
+                            name="head"
+                            scrolling="no">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-md-12 col-xs-12 nav-right">
+            <div style="text-align: center">
+                <img src="images/logo.png" alt="我的班级" class="img-circle" style="height: 150px;width: 150px;">
+            </div>
+            <div class="list-group">
+                <a href="javascript:;" onclick="goToPage('classmate.html')" class="list-group-item active a-align">
+                    班级成员
+                </a>
+                <a href="javascript:;" onclick="goToPage('myHomework.html')" class="list-group-item a-align">我的作业</a>
+                <a href="javascript:;" onclick="goToPage('discuss.html')" class="list-group-item a-align">班级讨论</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--切换iframe-->
+<script type="text/javascript">
+    // 全局变量
+    var src;
+
+    //带参数函数
+    function goToPage(param) {
+        document.getElementById("myIframe").src = param;
+        src = param;
+    }
+</script>
+<!--用户名的显示-->
+<script>
+    $(function () {
+        var json = window.localStorage.getItem("user");
+        var user = JSON.parse(json);
+        var username = user.username;
+        $("#name").html(username);
+    })
+</script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+body {
+    background-color: #efefef;
+}
+
+.main {
+    background-color: white;
+    margin: 30px;
+}
+
+.nav-padding {
+    padding: 15px;
+}
+
+.nav-right{
+    padding: 15px 30px 15px 0px;
+}
+.a-align{
+    display: block;
+    text-align: center;
+}

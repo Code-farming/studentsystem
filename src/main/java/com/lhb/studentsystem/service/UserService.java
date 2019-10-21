@@ -18,7 +18,7 @@ public class UserService {
         User user1 = userMapper.findById(user.getId());
         if (user1 != null) {
             if (user.getPassword().equals(user1.getPassword())) {
-                return ResponseResult.Success(200, "登陆成功", null);
+                return ResponseResult.Success(200, "登陆成功", user1);
             } else {
                 return ResponseResult.Error(500, "密码错误", null);
             }
@@ -29,7 +29,7 @@ public class UserService {
                 String username = schoolResultDTO.getUsername();
                 user.setUsername(username);
                 userMapper.addUser(user);
-                return ResponseResult.Success(200, "登陆成功", null);
+                return ResponseResult.Success(200, "登陆成功", user);
             }else{
                 return ResponseResult.Error(500, "用户不存在", null);
             }

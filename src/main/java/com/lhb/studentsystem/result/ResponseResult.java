@@ -26,7 +26,7 @@ public class ResponseResult {
     }
 
     public static ResponseResult Error(int code, String msg, Object data) {
-        return ResponseResult.builder().code(code).msg(msg).data(null).build();
+        return ResponseResult.builder().code(code).msg(msg).data(data).build();
     }
 
     public static ResponseResult Error() {

@@ -15,7 +15,7 @@
         <form>
             <!--标题-->
             <div class="logoHead">
-                <!--<h2 style="margin-top: 15px">房产销售平台管理系统</h2>-->
+                <h2 style="margin-top: 15px">学生作业平台管理系统</h2>
             </div>
             <!--用户名-->
             <div class="usernameWrapDiv">
@@ -147,7 +147,6 @@
                 var account = encodeInp(loginUsername);
                 var passwd = encodeInp(loginPassword);
                 var encoded = account + "%%%" + passwd;
-                console.log(encoded);
                 $("#encoded").val(encoded);
                 var params = {};
                 params.id = loginUsername;
@@ -163,14 +162,15 @@
                     contentType: 'application/json',
                     success: function (data) {
                         layer.close(loginLoadIndex);
-                        console.log(data);
-                        console.log(data.code);
-                        console.log(data.msg)
                         if (data.code == 200) {
                             layer.alert(data.msg, {
                                 title: "登录",
                                 time: 1000
                             });
+                            var db=window.localStorage;
+                            var obj=data.data;
+                            console.log(obj)
+                            db.setItem("user",JSON.stringify(obj));
                             setTimeout(function () {
                                 window.location.href = './main.html';
                             }, 2000)
