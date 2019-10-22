@@ -46,27 +46,30 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#">我的信息</a>
+                            <a href="javascript:;" data-toggle="modal" data-target="#myModal"
+                               onclick="findInformation()">我的信息</a>
                         </li>
-                        <li><a href="#">修改密码</a></li>
-                        <li><a href="#">退出登录</a></li>
+                        <li>
+                            <a href="javascript:;" data-toggle="modal" data-target="#pwdModal">修改密码</a>
+                        </li>
+                        <li><a href="javascript:;">退出登录</a></li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-
+<!--iframe-->
 <div class="container-fluid main">
     <div class="row">
         <!--侧边栏-->
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 nav-padding">
-            <div style="height: 750px">
+            <div style="height: 700px">
                 <div style="padding: 20px;">
                     <iframe id="myIframe" src="classmate.html"
                             frameborder="1"
-                            width="900px"
-                            height="700px"
+                            width="1000px"
+                            height="680px"
                             name="head"
                             scrolling="no">
                     </iframe>
@@ -87,6 +90,79 @@
         </div>
     </div>
 </div>
+<!--弹出学生信息框-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    我的信息
+                </h4>
+            </div>
+            <div class="modal-body" style=" text-align: center;font-size: 20px">
+                <label style="color: #1E9FFF;">学号: </label>
+                <span id="studentId"></span><br><br>
+                <hr>
+                <label style="color: #1E9FFF;">姓名: </label>
+                <span id="studentName"></span><br><br>
+                <hr>
+                <label style="color: #1E9FFF;">角色: </label>
+                <span id="studentRole"></span><br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!--弹出修改密码框-->
+
+<div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="Pass" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="updatePass">
+                    修改密码
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <span class="input-group-addon">旧密码&nbsp;&nbsp;</span>
+                    <input type="text" class="form-control" placeholder="请输入旧密码" name="oldPwd">
+                    <span class='input-group-addon hidden' id='oldSpan' hidden><span class="label label-danger" hidden>密码错误</span></span>
+
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">新密码&nbsp;&nbsp;</span>
+                    <input type="text" class="form-control" name="newPwd">
+                    <span class='input-group-addon hidden' id='newSpan' hidden><span class="label label-danger" hidden>新密码不能为空</span></span>
+
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">确认密码</span>
+                    <input type="text" class="form-control" name="rePwd">
+                    <span class='input-group-addon hidden' id='reSpan' hidden><span class="label label-danger" hidden>两次输入的密码不一致</span></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="btnPwd" onclick="updatePass()">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!--切换iframe-->
 <script type="text/javascript">
@@ -99,14 +175,97 @@
         src = param;
     }
 </script>
-<!--用户名的显示-->
+
 <script>
+    //用户名的显示
     $(function () {
-        var json = window.localStorage.getItem("user");
+        var json = window.sessionStorage.getItem("user");
         var user = JSON.parse(json);
         var username = user.username;
         $("#name").html(username);
     })
+
+    //获取用户信息
+    findInformation = function () {
+        var json = window.sessionStorage.getItem("user");
+        var user = JSON.parse(json);
+        var role = "";
+        $("#studentId").html(user.id);
+        $("#studentName").html(user.username);
+        console.log(user.roleId)
+        switch (user.roleId) {
+            case "1":
+                role = "普通学生";
+                break;
+            case "2":
+                role = "课代表";
+                break;
+            case "3":
+                role = "班长";
+                break;
+        }
+        console.log(role);
+        $("#studentRole").html(role);
+    }
+
+    //修改密码
+    updatePass = function () {
+        {
+            $('#oldSpan').addClass('hidden');
+            $('#newSpan').addClass('hidden');
+            $('#reSpan').addClass('hidden');
+            var oldpwd = $('input[name="oldPwd"]').val();
+            var newpwd = $('input[name="newPwd"]').val();
+            var repwd = $('input[name="rePwd"]').val();
+            var json = window.sessionStorage.getItem("user");
+            var user = JSON.parse(json);
+            var password = user.password;
+
+            if (oldpwd != password) {
+                $('#oldSpan').removeClass('hidden');
+                return;
+            }
+            if (newpwd.length < 1) {
+                $('#newSpan').removeClass('hidden');
+                return;
+            }
+            if (newpwd != repwd) {
+                $('#reSpan').removeClass('hidden');
+                return;
+            }
+            var params = {};
+            params.id = user.id;
+            params.oldPassword = user.password;
+            params.newPassword = newpwd;
+            $.ajax({
+                url: '/ssm/updatePass',
+                method: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(params),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {//data是成功后，接收的返回值
+                    if (data.code == 200) {
+                        alert('修改密码成功');
+                        window.location.href = './index.html';
+                    } else {
+                        //不存在
+                        alert('修改密码失败');
+                    }
+                },
+                error: function () {
+                    window.console.log('失败回调函数');
+                }
+            });
+
+            $('input[name="oldpwd"]').val('');
+            $('input[name="newpwd"]').val('');
+            $('input[name="repwd"]').val('');
+            $(function () {
+                $('#pwdModal').modal('hide')
+            });
+        }
+    }
 </script>
 </body>
 </html>

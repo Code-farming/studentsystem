@@ -1,6 +1,7 @@
 package com.lhb.studentsystem.service;
 
 import com.lhb.studentsystem.dto.SchoolResultDTO;
+import com.lhb.studentsystem.dto.UpdatePassDTO;
 import com.lhb.studentsystem.mapper.UserMapper;
 import com.lhb.studentsystem.model.User;
 import com.lhb.studentsystem.provider.SchoolProvider;
@@ -30,7 +31,7 @@ public class UserService {
                 user.setUsername(username);
                 userMapper.addUser(user);
                 return ResponseResult.Success(200, "登陆成功", user);
-            }else{
+            } else {
                 return ResponseResult.Error(500, "用户不存在", null);
             }
         }
@@ -39,5 +40,15 @@ public class UserService {
     public String getUserName(String id) {
         User byId = userMapper.findById(id);
         return byId.getUsername();
+    }
+
+    public ResponseResult updatePassWord(UpdatePassDTO updatePassDTO) {
+        User user = userMapper.findByUpdatePassDTO(updatePassDTO);
+        if (user != null){
+            userMapper.updatePassword(updatePassDTO);
+            User user1 = userMapper.findById(updatePassDTO.getId());
+            return ResponseResult.Success(200,"修改成功",user1);
+        }
+        return ResponseResult.Error(500,"用户名或密码错误",null);
     }
 }

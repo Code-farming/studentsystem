@@ -47,7 +47,7 @@
                     <label>验证码:</label>
                 </div>
                 <div class="cardDiv">
-                    <input id="loginCard" class="layui-input cardInput" type="text" name="card" placeholder="输入验证码">
+                    <input id="loginCard" class="layui-input cardInput" type="text" name="card" autocomplete="off" placeholder="输入验证码">
                 </div>
                 <div class="codeDiv">
                     <input id="loginCode" class="layui-input codeInput" type="button">
@@ -167,7 +167,7 @@
                                 title: "登录",
                                 time: 1000
                             });
-                            var db=window.localStorage;
+                            var db=window.sessionStorage;
                             var obj=data.data;
                             console.log(obj)
                             db.setItem("user",JSON.stringify(obj));

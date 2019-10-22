@@ -1,8 +1,8 @@
 package com.lhb.studentsystem.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.lhb.studentsystem.dto.UpdatePassDTO;
 import com.lhb.studentsystem.model.User;
-import com.lhb.studentsystem.provider.SchoolProvider;
 import com.lhb.studentsystem.result.ResponseResult;
 import com.lhb.studentsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,13 @@ public class UserController {
         ResponseResult responseResult = userService.loginUser(user);
         String userName = userService.getUserName(user.getId());
         request.getSession().setAttribute("user", userName);
+        return responseResult;
+    }
+
+    @PostMapping("/updatePass")
+    public ResponseResult updatePass(@RequestBody String json, HttpServletRequest request) {
+        UpdatePassDTO updatePassDTO = JSON.parseObject(json, UpdatePassDTO.class);
+        ResponseResult responseResult=userService.updatePassWord(updatePassDTO);
         return responseResult;
     }
 

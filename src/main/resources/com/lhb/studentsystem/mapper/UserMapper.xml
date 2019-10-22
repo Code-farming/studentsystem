@@ -6,12 +6,20 @@
          insert into t_user(id,username,password,sys_password) values (#{id},#{username},#{password},#{sysPassword})
     </insert>
 
+    <update id="updatePassword">
+        update t_user set password=#{newPassword} where id=#{id}
+    </update>
+
     <select id="findByName" resultType="com.lhb.studentsystem.model.User">
           select * from t_user where username=#{username}
     </select>
 
     <select id="findById" resultType="com.lhb.studentsystem.model.User">
         select * from t_user where id=#{id}
+    </select>
+
+    <select id="findByUpdatePassDTO" resultType="com.lhb.studentsystem.model.User">
+        select * from t_user where id=#{id} and password=#{oldPassword}
     </select>
 
 </mapper>
