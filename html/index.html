@@ -155,7 +155,7 @@
                 var loginLoadIndex = layer.load(2);
                 $('#loginBtn').val("正在登录...");
                 $.ajax({
-                    url: '/ssm/login',
+                    url: '/ssm/user/login',
                     method: 'post',
                     dataType: 'json',
                     data: JSON.stringify(params),
@@ -180,6 +180,7 @@
                                 time: 1000
                             });
                             $('#loginBtn').val("登录");
+                            createCode('#loginCode');
                             return false;
                         }
                     },

@@ -1,10 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>发布</title>
+    <title>发布作业</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+
+    <!--markdown-->
+    <link rel="stylesheet" href="css/editormd.min.css">
+    <link rel="stylesheet" href="css/editormd.preview.min.css">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/editormd.min.js"></script>
+
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/nav.js"></script>
+
+
+
 </head>
 <body>
-<h2>这是发布页面</h2>
+<!--导航栏-->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed glyphicon glyphicon-align-justify"
+                    data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">首页</span>
+            </button>
+            <a class="navbar-brand" href="main.html">首页</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        <span>发布</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="./public.html">发布作业</a></li>
+                        <li><a href="#">发布通知</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="notice.html">通知</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        <span id="name"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="javascript:;" data-toggle="modal" data-target="#myModal"
+                               onclick="findInformation()">我的信息</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-toggle="modal" data-target="#pwdModal">修改密码</a>
+                        </li>
+                        <li><a href="javascript:;" onclick="logout()">退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--提交作业的表单-->
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发布作业</h2>
+            <hr>
+
+            <form>
+                <div class="form-group">
+                    <label for="title">作业标题（简单扼要）:</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题...."
+                           autocomplete="off">
+                </div>
+                <div class="form-group" id="homework-editor">
+                    <label for="description">作业补充（必填，请参照右边提示）:</label>
+                    <textarea class="form-control" name="description" id="description" style="display: none"
+                              cols="30"
+                              rows="10"></textarea>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        var editor = editormd("homework-editor", {
+                            width  : "100%",
+                            height : 400,
+                            path: "/js/lib/",
+                            delay:0,
+                            watch:false,
+                            placeholder: "请输入作业描述",
+                            imageUpload: true,
+                            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                            imageUploadURL: "/ssm/file/uploadImage",
+                        });
+                    });
+                </script>
+
+
+                <div class="form-group">
+                    <label for="title">添加标签:</label>
+                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签，以,分隔">
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-md-12 col-xs-12">
+            <h3>作业发起指南</h3><br>
+            • 作业标题: 请用精简的语言描述您发布的作业标题，不超过25字 <br><br>
+            • 作业补充: 详细补充您的作业内容，并确保问题描述清晰直观, 并提供一些相关的资料<br><br>
+            • 文件格式: 选择一个合适的作业格式<br><br>
+        </div>
+    </div>
+</div>
+
+
+<!--弹出学生信息框-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    我的信息
+                </h4>
+            </div>
+            <div class="modal-body" style=" text-align: center;font-size: 20px">
+                <label style="color: #1E9FFF;">学号: </label>
+                <span id="studentId"></span><br><br>
+                <hr>
+                <label style="color: #1E9FFF;">姓名: </label>
+                <span id="studentName"></span><br><br>
+                <hr>
+                <label style="color: #1E9FFF;">角色: </label>
+                <span id="studentRole"></span><br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!--弹出修改密码框-->
+<div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="Pass" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="updatePass">
+                    修改密码
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <span class="input-group-addon">旧密码&nbsp;&nbsp;</span>
+                    <input type="password" class="form-control" placeholder="请输入旧密码" name="oldPwd">
+                    <span class='input-group-addon hidden' id='oldSpan' hidden><span class="label label-danger" hidden>密码错误</span></span>
+
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">新密码&nbsp;&nbsp;</span>
+                    <input type="password" class="form-control" name="newPwd">
+                    <span class='input-group-addon hidden' id='newSpan' hidden><span class="label label-danger" hidden>新密码不能为空</span></span>
+
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">确认密码</span>
+                    <input type="password" class="form-control" name="rePwd">
+                    <span class='input-group-addon hidden' id='reSpan' hidden><span class="label label-danger" hidden>两次输入的密码不一致</span></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="btnPwd" onclick="updatePass()">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 </body>
 </html>

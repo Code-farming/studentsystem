@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/nav.js"></script>
 </head>
 <body>
 <!--导航栏-->
@@ -31,7 +32,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">发布作业</a></li>
+                        <li><a href="./public.html">发布作业</a></li>
                         <li><a href="#">发布通知</a></li>
                     </ul>
                 </li>
@@ -52,7 +53,7 @@
                         <li>
                             <a href="javascript:;" data-toggle="modal" data-target="#pwdModal">修改密码</a>
                         </li>
-                        <li><a href="javascript:;">退出登录</a></li>
+                        <li><a href="javascript:;" onclick="logout()">退出登录</a></li>
                     </ul>
                 </li>
             </ul>
@@ -120,7 +121,6 @@
     </div><!-- /.modal -->
 </div>
 <!--弹出修改密码框-->
-
 <div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="Pass" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -134,21 +134,21 @@
             <div class="modal-body">
                 <div class="input-group">
                     <span class="input-group-addon">旧密码&nbsp;&nbsp;</span>
-                    <input type="text" class="form-control" placeholder="请输入旧密码" name="oldPwd">
+                    <input type="password" class="form-control" placeholder="请输入旧密码" name="oldPwd">
                     <span class='input-group-addon hidden' id='oldSpan' hidden><span class="label label-danger" hidden>密码错误</span></span>
 
                 </div>
                 <br>
                 <div class="input-group">
                     <span class="input-group-addon">新密码&nbsp;&nbsp;</span>
-                    <input type="text" class="form-control" name="newPwd">
+                    <input type="password" class="form-control" name="newPwd">
                     <span class='input-group-addon hidden' id='newSpan' hidden><span class="label label-danger" hidden>新密码不能为空</span></span>
 
                 </div>
                 <br>
                 <div class="input-group">
                     <span class="input-group-addon">确认密码</span>
-                    <input type="text" class="form-control" name="rePwd">
+                    <input type="password" class="form-control" name="rePwd">
                     <span class='input-group-addon hidden' id='reSpan' hidden><span class="label label-danger" hidden>两次输入的密码不一致</span></span>
                 </div>
             </div>
@@ -176,96 +176,5 @@
     }
 </script>
 
-<script>
-    //用户名的显示
-    $(function () {
-        var json = window.sessionStorage.getItem("user");
-        var user = JSON.parse(json);
-        var username = user.username;
-        $("#name").html(username);
-    })
-
-    //获取用户信息
-    findInformation = function () {
-        var json = window.sessionStorage.getItem("user");
-        var user = JSON.parse(json);
-        var role = "";
-        $("#studentId").html(user.id);
-        $("#studentName").html(user.username);
-        console.log(user.roleId)
-        switch (user.roleId) {
-            case "1":
-                role = "普通学生";
-                break;
-            case "2":
-                role = "课代表";
-                break;
-            case "3":
-                role = "班长";
-                break;
-        }
-        console.log(role);
-        $("#studentRole").html(role);
-    }
-
-    //修改密码
-    updatePass = function () {
-        {
-            $('#oldSpan').addClass('hidden');
-            $('#newSpan').addClass('hidden');
-            $('#reSpan').addClass('hidden');
-            var oldpwd = $('input[name="oldPwd"]').val();
-            var newpwd = $('input[name="newPwd"]').val();
-            var repwd = $('input[name="rePwd"]').val();
-            var json = window.sessionStorage.getItem("user");
-            var user = JSON.parse(json);
-            var password = user.password;
-
-            if (oldpwd != password) {
-                $('#oldSpan').removeClass('hidden');
-                return;
-            }
-            if (newpwd.length < 1) {
-                $('#newSpan').removeClass('hidden');
-                return;
-            }
-            if (newpwd != repwd) {
-                $('#reSpan').removeClass('hidden');
-                return;
-            }
-            var params = {};
-            params.id = user.id;
-            params.oldPassword = user.password;
-            params.newPassword = newpwd;
-            $.ajax({
-                url: '/ssm/updatePass',
-                method: 'POST',
-                dataType: 'json',
-                data: JSON.stringify(params),
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (data) {//data是成功后，接收的返回值
-                    if (data.code == 200) {
-                        alert('修改密码成功');
-                        window.location.href = './index.html';
-                    } else {
-                        //不存在
-                        alert('修改密码失败');
-                    }
-                },
-                error: function () {
-                    window.console.log('失败回调函数');
-                }
-            });
-
-            $('input[name="oldpwd"]').val('');
-            $('input[name="newpwd"]').val('');
-            $('input[name="repwd"]').val('');
-            $(function () {
-                $('#pwdModal').modal('hide')
-            });
-        }
-    }
-</script>
 </body>
 </html>

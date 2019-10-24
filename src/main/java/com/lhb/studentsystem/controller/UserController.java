@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
+@RequestMapping("user")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -19,8 +20,7 @@ public class UserController {
     public ResponseResult login(@RequestBody String json, HttpServletRequest request) throws Exception {
         User user = JSON.parseObject(json, User.class);
         ResponseResult responseResult = userService.loginUser(user);
-        String userName = userService.getUserName(user.getId());
-        request.getSession().setAttribute("user", userName);
+        request.getSession().setAttribute("user", user);
         return responseResult;
     }
 
@@ -31,7 +31,14 @@ public class UserController {
         return responseResult;
     }
 
-    @RequestMapping("get/{id}")
+    @RequestMapping("/logout")
+    public ResponseResult logout(HttpServletRequest request) {
+        request.getSession().removeAttribute("user");
+        ResponseResult responseResult = ResponseResult.Success(200, "退出成功", null);
+        return responseResult;
+    }
+
+    @RequestMapping("/get/{id}")
     public ResponseResult getUserById(@PathVariable int id, HttpServletRequest request) {
         String user = (String) request.getSession().getAttribute("user");
         if (user != null) {
