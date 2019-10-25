@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.crypto.Data;
 import java.util.Date;
 
 @RestController
@@ -24,8 +23,6 @@ public class PublicController {
     @PostMapping("/publicWork")
     public ResponseResult publicWork(@RequestBody String json, HttpServletRequest request) {
         Homework homework = JSON.parseObject(json, Homework.class);
-        Date nowDate = DateHandler.getNowDate();
-        homework.setCreateTime(nowDate);
         //先不做判空，先利用前台的判空
         homeworkService.addHomework(homework);
         ResponseResult responseResult = ResponseResult.Success(200, "发布成功", null);

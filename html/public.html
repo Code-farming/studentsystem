@@ -83,13 +83,14 @@
                 <input type="hidden" id="fromId" name="fromId">
                 <div class="layui-form-item">
                     <label class="layui-form-label">作业标题（简单扼要）:</label>
-                        <div class="layui-input-block">
-                        <input type="text" id="title" name="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    <div class="layui-input-block">
+                        <input type="text" id="title" name="title" autocomplete="off" placeholder="请输入标题"
+                               class="layui-input">
                     </div>
                 </div>
 
                 <div class="layui-form-item layui-form-text" id="homework-editor">
-                     <textarea name="content" id="content"  style="display:none;"></textarea>
+                    <textarea name="content" id="content" style="display:none;"></textarea>
                 </div>
 
                 <script type="text/javascript">
@@ -131,7 +132,8 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">截止时间</label>
                         <div class="layui-input-block">
-                            <input type="text" name="deadline" id="deadline" autocomplete="off" class="layui-input" readonly>
+                            <input type="text" name="deadline" id="deadline" autocomplete="off" class="layui-input"
+                                   readonly>
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -325,15 +327,15 @@
             var title = $("#title").val();
             var date = $("#deadline").val();
             var format = $('input[name="format"]:checked').val();
-            if($.trim(title)==''|| $.trim(title).length <= 0 ){
+            if ($.trim(title) == '' || $.trim(title).length <= 0) {
                 layer.alert("作业标题不能为空");
                 return false;
             }
-            if($.trim(date)==''|| $.trim(date).length <= 0 ){
+            if ($.trim(date) == '' || $.trim(date).length <= 0) {
                 layer.alert("请选择截止时间");
                 return false;
             }
-            if($.trim(format)==''|| $.trim(format).length <= 0 ){
+            if ($.trim(format) == '' || $.trim(format).length <= 0) {
                 layer.alert("请选择作业格式");
                 return false;
             }
@@ -345,18 +347,17 @@
                 data: option,
                 contentType: 'application/json',
                 success: function (data) {
-
+                    if (data.code == 200) {
+                        layer.alert(data.msg);
+                        setTimeout(function () {
+                            window.location.href = './myHomework.html';
+                        }, 2000)
+                    }
                 },
                 error: function () {
-                    layer.close(loginLoadIndex);
-                    $('#loginBtn').val("登录");
+                    layer.alert(data.msg);
                 }
             })
-            layer.alert(option, {
-                title: '最终的提交信息'
-            })
-
-
             return false;
         });
     });
