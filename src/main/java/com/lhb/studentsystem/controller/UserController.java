@@ -20,7 +20,8 @@ public class UserController {
     public ResponseResult login(@RequestBody String json, HttpServletRequest request) throws Exception {
         User user = JSON.parseObject(json, User.class);
         ResponseResult responseResult = userService.loginUser(user);
-        request.getSession().setAttribute("user", user);
+        User user1 = userService.getUser(user.getId());
+        request.getSession().setAttribute("user", user1);
         return responseResult;
     }
 
@@ -37,6 +38,7 @@ public class UserController {
         ResponseResult responseResult = ResponseResult.Success(200, "退出成功", null);
         return responseResult;
     }
+
 
     @RequestMapping("/get/{id}")
     public ResponseResult getUserById(@PathVariable int id, HttpServletRequest request) {

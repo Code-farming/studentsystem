@@ -5,37 +5,52 @@
     <title>test</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <!--对fileput支持的CSS-->
+    <link href="fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="fileinput/themes/explorer-fa/theme.css" media="all" rel="stylesheet" type="text/css"/>
+
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <!--对fileput支持的JS-->
+    <script src="fileinput/js/plugins/sortable.js" type="text/javascript"></script>
+    <script src="fileinput/js/fileinput.js" type="text/javascript"></script>
+    <script src="fileinput/js/locales/zh.js" type="text/javascript"></script>
+    <script src="fileinput/themes/explorer-fa/theme.js" type="text/javascript"></script>
+    <script src="fileinput/themes/fa/theme.js"></script>
 </head>
 <body>
-<!-- 按钮触发模态框 -->
-<a  data-toggle="modal" data-target="#myModal">
-    开始演示模态框
-</a>
-<!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    模态框（Modal）标题
-                </h4>
-            </div>
-            <div class="modal-body">
-                。。。。。
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                </button>
-                <button type="button" class="btn btn-primary">
-                    提交更改
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
-</div></body>
+<div class="modal-body">
+    <strong>
+        <form enctype="multipart/form-data">
+            <input id="file-file" class="file" type="file" multiple>
+        </form>
+    </strong>
+</div>
+<script>
+    function initFileInput(ctrlName, uploadUrl) {
+        var control = $('#' + ctrlName);
+        control.fileinput({
+            resizeImage : true,
+            maxImageWidth : 200,
+            maxImageHeight : 200,
+            resizePreference : 'width',
+            language : 'zh', //设置语言
+            uploadUrl : uploadUrl,
+            uploadAsync : true,
+            allowedFileExtensions : [ 'jpg', 'png', 'gif','docx' ],//接收的文件后缀
+            showUpload : true, //是否显示上传按钮
+            showCaption : true,//是否显示标题
+            browseClass : "btn btn-primary", //按钮样式
+            previewFileIcon : "<i class='glyphicon glyphicon-king'></i>",
+            maxFileCount : 3,
+            msgFilesTooMany : "选择图片超过了最大数量",
+            minFileSize:0,//设置上传文件的最小值，单位为K
+            maxFileSize : 2000,//设置上传文件的最大值，单位为K
+        });
+    };
+    //初始化控件initFileInput(id,uploadurl)控件id，与上传路径
+    initFileInput("file-file", "/tqyh/pushMessAction");
+</script>
+</body>
 </html>

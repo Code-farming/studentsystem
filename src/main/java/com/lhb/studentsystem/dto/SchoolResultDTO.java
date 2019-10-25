@@ -6,5 +6,4 @@ import lombok.Data;
 public class SchoolResultDTO {
     private boolean flag;
     private String username;
-
 }

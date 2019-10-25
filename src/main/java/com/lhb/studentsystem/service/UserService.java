@@ -41,9 +41,9 @@ public class UserService {
         }
     }
 
-    public String getUserName(String id) {
-        User byId = userMapper.findById(id);
-        return byId.getUsername();
+    public User getUser(String id) {
+        User user = userMapper.findById(id);
+        return user;
     }
 
     public ResponseResult updatePassWord(UpdatePassDTO updatePassDTO) {
