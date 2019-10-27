@@ -5,6 +5,8 @@ import com.lhb.studentsystem.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     User findByName(@Param("username") String username);
@@ -16,4 +18,7 @@ public interface UserMapper {
     User findByUpdatePassDTO(UpdatePassDTO updatePassDTO);
 
     void updatePassword(UpdatePassDTO updatePassDTO);
+
+    List<User> findAllUser();
+
 }

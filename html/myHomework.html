@@ -11,32 +11,81 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/nav.js"></script>
+    <style>
+        .homework-bottom {
+            background-color: #e8eeda;
+            height: 40px;
+            color: #fff;
+            padding: 0 10px;
+            overflow: hidden;
+            border: solid 1px #CCC;
+        }
+
+        .Btn-style {
+            display: inline-block;
+            height: 28px;
+            padding: 0 10px;
+            background: #7b9e31;
+            font-size: 14px;
+            color: #FFF;
+            line-height: 28px;
+            cursor: pointer;
+            border-radius: 3px;
+            float: right;
+            margin-top: 5px;
+        }
+
+        .work-showDiv {
+            font-family: Microsoft YaHei;
+            border: 1px solid #e1e1e1;
+            margin: 20px 0px 0px 6px;
+            height: auto;
+            padding: 15px 0px 0px 0px;
+            background-color: #fefff6;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
 <script>
+    var json = window.sessionStorage.getItem("user");
+    var user = JSON.parse(json);
+    var id = user.id;
     $.ajax({
         type: "GET",
-        url: "ssm/work/allWork",
-        data: {username: $("#username").val(), content: $("#content").val()},
+        url: "ssm/work/allWork?userId=" + id,
         dataType: "json",
         success: function (data) {
-            if (data.code) {
+            if (data.code == 200) {
                 $("#work").empty();
                 var html = '';
-                $.each(data.data, function(index,work){
-                    html += ' <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">\n' +
-                        '                        <div style="margin:6px 0px 0px 6px;height:200px;padding:15px 0px 0px 10px;background-color: #fefff6;border-radius: 5px">' +
-                        '                            <span>作业名:</span><span>' + work.title + '</span><br>' +
-                        '                            <span>创建时间:</span><span>' + work['createTime'] + '</span><br>' +
-                        '                            <span>截止时间:</span><span>' + work['deadline'] + '</span><br>  </div>' +
-                        '                    </div>'
+                $.each(data.data, function (index, work) {
+                    var workId = work.homeWork['id'];
+                    var status = work.userWork['status'];
+                    if (status == 'N') {
+                        status = "未提交";
+                    } else {
+                        status = "已提交";
+                    }
+                    html += ' <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">' +
+                        '                        <div class="work-showDiv">' +
+                        '                            <strong><span style="font-size: 18px">' + work.homeWork['title'] + '</span></strong><br><br>' +
+                        '                            <span>创建时间:</span><span>' + work.homeWork['createTime'] + '</span><br><br>' +
+                        '                            <span>截止时间:</span><span>' + work.homeWork['deadline'] + '</span><br><br>' +
+                        '                            <span>作业状态:</span><span>' + status + '</span><br><br>' +
+                        '                            <div class="homework-bottom">' +
+                        '                                   <a class="Btn-style" href="./homeWorkDesc.html?workId=' + workId + '">' +
+                        '                                   <span>查看</span>' +
+                        '                                   </a>' +
+                        '                       </div>' +
+                        '      </div>' +
+                        '</div>'
+
                 });
                 $("#work").html(html);
             }
         }
-
     })
-
 </script>
 <!--导航栏-->
 <nav class="navbar navbar-default">
@@ -121,11 +170,9 @@
                 <img src="images/logo.png" alt="我的班级" class="img-circle" style="height: 150px;width: 150px;">
             </div>
             <div class="list-group">
-                <a href="javascript:;" onclick="goToPage('classmate.html')" class="list-group-item active a-align">
-                    班级成员
-                </a>
-                <a href="javascript:;" onclick="goToPage('myHomework.html')" class="list-group-item a-align">我的作业</a>
-                <a href="javascript:;" onclick="goToPage('discuss.html')" class="list-group-item a-align">班级讨论</a>
+                <a href="./classmate.html" class="list-group-item active a-align">班级成员</a>
+                <a href="./myHomework.html" class="list-group-item a-align">我的作业</a>
+                <a href="./discuss.html" class="list-group-item a-align">班级讨论</a>
             </div>
         </div>
     </div>

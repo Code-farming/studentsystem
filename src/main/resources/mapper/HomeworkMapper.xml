@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lhb.studentsystem.mapper.HomeworkMapper">
-    <insert id="addHomework">
-    insert into t_homework (from_id, content, files, deadline, title, format) values (#{fromId},#{content},#{files},#{deadline},#{title},#{format});
+    <insert id="addHomework" useGeneratedKeys="true" keyProperty="id">
+    insert into t_homework (from_id, content, files, deadline, title, format,original_name) values (#{fromId},#{content},#{files},#{deadline},#{title},#{format},#{originalName});
     </insert>
     <select id="findAllWork" resultType="com.lhb.studentsystem.model.Homework">
         select * from t_homework;
+    </select>
+    <select id="findWorkById" resultType="com.lhb.studentsystem.model.Homework">
+        select * from t_homework where id=#{homeworkId};
     </select>
 </mapper>

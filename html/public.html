@@ -73,7 +73,7 @@
 </nav>
 <!--提交作业的表单-->
 <div class="container-fluid main">
-    <div class="row">
+    <div class="row"  style="padding: 15px 15px">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发布作业</h2>
             <hr>
@@ -125,6 +125,8 @@
                         </table>
                     </div>
                 </div>
+                <!--隐藏输入框，将文件的原始名传给后台-->
+                <input type="hidden" id="originalName" name="originalName">
                 <!--隐藏输入框，将文件的名字传给后台-->
                 <input type="hidden" id="files" name="files">
                 <!--作业上传的时间，格式-->
@@ -283,8 +285,11 @@
             , done: function (res, index, upload) {
 
                 if (res.code == 0) { //上传成功
-                    var val = $("#files").val();
-                    $("#files").val(val + res.data + ";");
+                    var filename = $("#files").val();
+                    $("#files").val(filename + res.data.newName + ";");
+                    var originalName = $("#originalName").val();
+                    $("#originalName").val(originalName + res.data.originalName + ";");
+
                     var tr = demoListView.find('tr#upload-' + index)
                         , tds = tr.children();
                     tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
