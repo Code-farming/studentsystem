@@ -6,6 +6,13 @@
         insert into t_userwork (user_id, homework_id) values (#{userId},#{homeworkId})
     </insert>
 
+    <update id="createFile">
+        update t_userwork set file = #{file},commit_time=#{commitTime},status=#{status} where user_id=#{userId} and homework_id=#{workId};
+    </update>
+    <update id="updateFile">
+         update t_userwork set file = #{file},modified_time=#{modifiedTime},status=#{status} where user_id=#{userId} and homework_id=#{workId};
+    </update>
+
     <select id="findByUserId" resultType="com.lhb.studentsystem.model.UserWork">
         select * from t_userwork where user_id =#{userId};
     </select>

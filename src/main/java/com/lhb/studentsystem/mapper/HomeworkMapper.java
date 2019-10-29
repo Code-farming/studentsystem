@@ -14,4 +14,5 @@ public interface HomeworkMapper {
     List<Homework> findAllWork();
 
     Homework findWorkById(@Param("homeworkId") Integer homeworkId);
+
 }

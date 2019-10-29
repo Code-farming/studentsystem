@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,7 +38,7 @@ public class UserWorkService {
     }
 
     public List<UserWorkDTO> findAllWork(String userId) {
-        List<UserWorkDTO> userWorkDTOList=new ArrayList<>();
+        List<UserWorkDTO> userWorkDTOList = new ArrayList<>();
         //查找自己的作业
         List<UserWork> userWorks = userWorkMapper.findByUserId(userId);
         //通过遍历userWorks的homeworkId属性找到对应的作业要求
@@ -60,5 +61,19 @@ public class UserWorkService {
         userWorkDTO.setHomeWork(homework);
         userWorkDTO.setUserWork(userWork);
         return userWorkDTO;
+    }
+
+    public void createOrUpdateFile(String newName, String userId, Integer workId) {
+        UserWork work = userWorkMapper.findWork(userId, workId);
+        if (work.getFile() == null){
+            Date date = new Date();
+            String status="Y";
+            userWorkMapper.createFile(newName,userId,workId,date,status);
+        }else {
+            Date date =new Date();
+            String status="Y";
+            userWorkMapper.updateFile(newName,userId,workId,date,status);
+        }
+
     }
 }

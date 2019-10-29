@@ -2,11 +2,15 @@ package com.lhb.studentsystem.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.lhb.studentsystem.dto.UpdatePassDTO;
+import com.lhb.studentsystem.mapper.UserMapper;
 import com.lhb.studentsystem.model.User;
 import com.lhb.studentsystem.result.ResponseResult;
 import com.lhb.studentsystem.service.UserService;
+import com.lhb.studentsystem.service.UserWorkService;
+import com.lhb.studentsystem.utils.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserWorkService userWorkService;
+    @Autowired
+    private UserMapper userMapper;
+
+    String realPath = "d:\\uploadFile";
 
     @PostMapping("/login")
     public ResponseResult login(@RequestBody String json, HttpServletRequest request) throws Exception {
@@ -28,7 +38,7 @@ public class UserController {
     @PostMapping("/updatePass")
     public ResponseResult updatePass(@RequestBody String json, HttpServletRequest request) {
         UpdatePassDTO updatePassDTO = JSON.parseObject(json, UpdatePassDTO.class);
-        ResponseResult responseResult=userService.updatePassWord(updatePassDTO);
+        ResponseResult responseResult = userService.updatePassWord(updatePassDTO);
         return responseResult;
     }
 
@@ -40,12 +50,34 @@ public class UserController {
     }
 
 
-    @RequestMapping("/get/{id}")
-    public ResponseResult getUserById(@PathVariable int id, HttpServletRequest request) {
-        String user = (String) request.getSession().getAttribute("user");
-        if (user != null) {
-            return ResponseResult.Success(200, "陈工", "欢迎您" + user);
+    @PostMapping("/uploadWork")
+    public ResponseResult uploadWork(HttpServletRequest request,
+                                     @RequestParam(value = "file") MultipartFile multipartFile,
+                                     @RequestParam("fromId") String fromId,
+                                     @RequestParam("title") String title,
+                                     String username,
+                                     String userId,
+                                     Integer workId) {
+        System.out.println(title);
+        String originalFilename = multipartFile.getOriginalFilename();
+        User user = userMapper.findById(fromId);
+        String fromName = user.getUsername();
+        System.out.println(username);
+        System.out.println(userId);
+
+        //为课代表创建一个存放对应作业的目录
+        String path = realPath + '\\' + fromName + '\\' + title;
+
+        //学生作业的上传操作
+        int length = originalFilename.length();
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."), length);
+        String newName = userId + '-' + username + '-' + title + suffix;
+        boolean b = FileUpload.uploadWork(path, newName, multipartFile);
+        if (b) {
+            userWorkService.createOrUpdateFile(newName,userId,workId);
+            return ResponseResult.Success(200, "上传成功", null);
         }
-        return ResponseResult.NotAllow();
+        return ResponseResult.Error();
     }
+
 }
