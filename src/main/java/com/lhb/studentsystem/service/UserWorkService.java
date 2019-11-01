@@ -76,4 +76,8 @@ public class UserWorkService {
         }
 
     }
+
+    public List<UserWork> findWorkListByWorkId(Integer workId) {
+        return userWorkMapper.findWorkListByWorkId(workId);
+    }
 }

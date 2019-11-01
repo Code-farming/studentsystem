@@ -3,7 +3,6 @@ package com.lhb.studentsystem.controller;
 import com.lhb.studentsystem.dto.FileNameDTO;
 import com.lhb.studentsystem.mapper.HomeworkMapper;
 import com.lhb.studentsystem.mapper.UserMapper;
-import com.lhb.studentsystem.model.Homework;
 import com.lhb.studentsystem.model.User;
 import com.lhb.studentsystem.result.ResponseResult;
 import com.lhb.studentsystem.result.UploadResult;
@@ -122,8 +121,8 @@ public class FileController {
         return ResponseResult.Success(0, "上传成功", fileNameDTO);
     }
 
-    @GetMapping("/getFile/{fromId}/{fileName}")
-    public Object getFile(HttpServletResponse response, @PathVariable String fileName, @PathVariable String fromId) {
+    @GetMapping("/getFile/{fromId}/{fileName}/{originalName}")
+    public Object getFile(HttpServletResponse response, @PathVariable String fileName, @PathVariable String fromId, @PathVariable String originalName) {
         User user = userMapper.findById(fromId);
         String username = user.getUsername();
         String path = realPath + '\\' + username + '\\' + fileName;

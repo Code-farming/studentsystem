@@ -2,9 +2,11 @@ package com.lhb.studentsystem.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.lhb.studentsystem.dto.UpdatePassDTO;
+import com.lhb.studentsystem.dto.UserDTO;
 import com.lhb.studentsystem.mapper.UserMapper;
 import com.lhb.studentsystem.model.User;
 import com.lhb.studentsystem.result.ResponseResult;
+import com.lhb.studentsystem.result.TableResult;
 import com.lhb.studentsystem.service.UserService;
 import com.lhb.studentsystem.service.UserWorkService;
 import com.lhb.studentsystem.utils.FileUpload;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("user")
@@ -47,6 +51,34 @@ public class UserController {
         request.getSession().removeAttribute("user");
         ResponseResult responseResult = ResponseResult.Success(200, "退出成功", null);
         return responseResult;
+    }
+
+    @RequestMapping("/findAllUser")
+    public TableResult findAllUser(HttpServletRequest request) {
+        List<User> allUser = userMapper.findAllUser();
+        List<UserDTO> userDTOList=new ArrayList<>();
+        TableResult tableResult = new TableResult();
+        tableResult.setCount(allUser.size());
+        for (User user : allUser) {
+            Integer roleId = user.getRoleId();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            switch (roleId){
+                case 1:
+                    userDTO.setRole("普通学生");
+                    break;
+                case 2:
+                    userDTO.setRole("课代表");
+                    break;
+                case 3:
+                    userDTO.setRole("班长");
+                    break;
+            }
+            userDTOList.add(userDTO);
+        }
+        tableResult.setData(userDTOList);
+        return tableResult;
     }
 
 

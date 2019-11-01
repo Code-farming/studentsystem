@@ -19,4 +19,6 @@ public interface UserWorkMapper {
     void createFile(@Param("file") String newName, @Param("userId") String userId, @Param("workId") Integer workId, @Param("commitTime") Date date, @Param("status") String status);
 
     void updateFile(@Param("file") String newName, @Param("userId") String userId, @Param("workId") Integer workId, @Param("modifiedTime") Date date, @Param("status") String status);
+
+    List<UserWork> findWorkListByWorkId(@Param("workId") Integer workId);
 }

@@ -21,4 +21,9 @@
         select * from t_userwork where user_id=#{userId} and homework_id=#{workId};
     </select>
 
+    <select id="findWorkListByWorkId" resultType="com.lhb.studentsystem.model.UserWork">
+        select * from t_userwork where homework_id=#{workId};
+    </select>
+
+
 </mapper>

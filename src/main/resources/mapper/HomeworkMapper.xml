@@ -10,4 +10,8 @@
     <select id="findWorkById" resultType="com.lhb.studentsystem.model.Homework">
         select * from t_homework where id=#{homeworkId};
     </select>
+
+    <select id="findWorkByUserId" resultType="com.lhb.studentsystem.model.Homework">
+        select * from t_homework where from_id=#{userId};
+    </select>
 </mapper>

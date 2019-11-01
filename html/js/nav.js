@@ -1,3 +1,9 @@
+var json = window.sessionStorage.getItem("user");
+var user = JSON.parse(json);
+if (user == null) {
+    window.location.href = "./index.html"
+}
+
 //用户名的显示
 $(function () {
     var json = window.sessionStorage.getItem("user");
@@ -14,14 +20,15 @@ findInformation = function () {
     $("#studentId").html(user.id);
     $("#studentName").html(user.username);
     console.log(user.roleId)
+    debugger
     switch (user.roleId) {
-        case "1":
+        case 1:
             role = "普通学生";
             break;
-        case "2":
+        case 2:
             role = "课代表";
             break;
-        case "3":
+        case 3:
             role = "班长";
             break;
     }
@@ -87,20 +94,20 @@ updatePass = function () {
 
 //退出登录
 logout = function () {
-        $.ajax({
-            url: '/ssm/user/logout',
-            method: 'get',
-            dataType: 'json',
-            success: function (data) {//data是成功后，接收的返回值
-                if (data.code == 200) {
-                    sessionStorage.removeItem("user");
-                    window.location.href = './index.html';
-                } else {
-                    //不存在
-                }
-            },
-            error: function () {
-                window.console.log('失败回调函数');
+    $.ajax({
+        url: '/ssm/user/logout',
+        method: 'get',
+        dataType: 'json',
+        success: function (data) {//data是成功后，接收的返回值
+            if (data.code == 200) {
+                sessionStorage.removeItem("user");
+                window.location.href = './index.html';
+            } else {
+                //不存在
             }
-        });
-    }
+        },
+        error: function () {
+            window.console.log('失败回调函数');
+        }
+    });
+}

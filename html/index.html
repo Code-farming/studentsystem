@@ -172,7 +172,12 @@
                             console.log(obj)
                             db.setItem("user",JSON.stringify(obj));
                             setTimeout(function () {
-                                window.location.href = './main.html';
+                                if (obj.roleId==1){
+                                    window.location.href = 'main-1.html';
+                                }else{
+                                    window.location.href = 'main-2.html';
+                                }
+
                             }, 2000)
                         } else {
                             layer.alert(data.msg, {

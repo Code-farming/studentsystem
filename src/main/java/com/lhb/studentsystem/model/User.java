@@ -8,5 +8,5 @@ public class User {
     private String username;
     private String password;
     private String sysPassword;  //加密后传的值
-    private String roleId;         //角色
+    private Integer roleId;         //角色
 }

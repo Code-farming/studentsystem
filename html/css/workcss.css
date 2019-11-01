@@ -1,0 +1,32 @@
+.homework-bottom {
+    background-color: #e8eeda;
+    height: 40px;
+    color: #fff;
+    padding: 0 10px;
+    overflow: hidden;
+    border: solid 1px #CCC;
+}
+
+.Btn-style {
+    display: inline-block;
+    height: 28px;
+    padding: 0 10px;
+    background: #7b9e31;
+    font-size: 14px;
+    color: #FFF;
+    line-height: 28px;
+    cursor: pointer;
+    border-radius: 3px;
+    float: right;
+    margin-top: 5px;
+}
+
+.work-showDiv {
+    font-family: Microsoft YaHei;
+    border: 1px solid #e1e1e1;
+    margin: 20px 0px 0px 6px;
+    height: auto;
+    padding: 15px 0px 0px 0px;
+    background-color: #fefff6;
+    border-radius: 5px;
+}

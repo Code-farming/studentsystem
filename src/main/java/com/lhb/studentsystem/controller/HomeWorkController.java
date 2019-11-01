@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("work")
+@RequestMapping("user")
 public class HomeWorkController {
     @Autowired
     private UserWorkService userWorkService;

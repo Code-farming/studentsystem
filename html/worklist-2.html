@@ -7,44 +7,12 @@
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/workcss.css">
 
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/nav.js"></script>
-    <style>
-        .homework-bottom {
-            background-color: #e8eeda;
-            height: 40px;
-            color: #fff;
-            padding: 0 10px;
-            overflow: hidden;
-            border: solid 1px #CCC;
-        }
 
-        .Btn-style {
-            display: inline-block;
-            height: 28px;
-            padding: 0 10px;
-            background: #7b9e31;
-            font-size: 14px;
-            color: #FFF;
-            line-height: 28px;
-            cursor: pointer;
-            border-radius: 3px;
-            float: right;
-            margin-top: 5px;
-        }
-
-        .work-showDiv {
-            font-family: Microsoft YaHei;
-            border: 1px solid #e1e1e1;
-            margin: 20px 0px 0px 6px;
-            height: auto;
-            padding: 15px 0px 0px 0px;
-            background-color: #fefff6;
-            border-radius: 5px;
-        }
-    </style>
 </head>
 <body>
 <script>
@@ -53,7 +21,7 @@
     var id = user.id;
     $.ajax({
         type: "GET",
-        url: "ssm/work/allWork?userId=" + id,
+        url: "ssm/user/allWork?userId=" + id,
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
@@ -74,7 +42,7 @@
                         '                            <span>截止时间:</span><span>' + work.homeWork['deadline'] + '</span><br><br>' +
                         '                            <span>作业状态:</span><span>' + status + '</span><br><br>' +
                         '                            <div class="homework-bottom">' +
-                        '                                   <a class="Btn-style" href="./homeWorkDesc.html?workId=' + workId + '">' +
+                        '                                   <a class="Btn-style" href="./workdesc-1.html?workId=' + workId + '">' +
                         '                                   <span>查看</span>' +
                         '                                   </a>' +
                         '                       </div>' +
@@ -96,11 +64,22 @@
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">首页</span>
             </button>
-            <a class="navbar-brand" href="main.html">首页</a>
+            <a class="navbar-brand" href="main-2.html">首页</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        <span>管理</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="./lookWork.html">查看作业</a></li>
+                        <li><a href="#">查看通知</a></li>
+                    </ul>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">
@@ -137,8 +116,6 @@
     </div>
 </nav>
 <!--主体页面-->
-
-
 <div class="container-fluid main">
     <div class="row">
         <!--展示作业信息-->
@@ -153,14 +130,6 @@
             <hr>
             <div style="height: 700px;margin: 20px 0px 0px 10px;">
                 <div id="work">
-                    <!--<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">-->
-                    <!--<div style="margin:6px 0px 0px 6px;height:200px;padding:15px 0px 0px 10px;background-color: #fefff6;border-radius: 5px">-->
-                    <!--<span>这是标题</span><br>-->
-                    <!--<span>开始时间:</span><br>-->
-                    <!--<span>截止时间:</span><br>-->
-                    <!--<span>作业状态</span><br>-->
-                    <!--</div>-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -170,9 +139,11 @@
                 <img src="images/logo.png" alt="我的班级" class="img-circle" style="height: 150px;width: 150px;">
             </div>
             <div class="list-group">
-                <a href="./classmate.html" class="list-group-item active a-align">班级成员</a>
-                <a href="./myHomework.html" class="list-group-item a-align">我的作业</a>
-                <a href="./discuss.html" class="list-group-item a-align">班级讨论</a>
+                <a id="classmate" href="classmate-2.html" class="list-group-item a-align">
+                    班级成员
+                </a>
+                <a id="myHomework" href="./worklist-2.html" class="list-group-item a-align">我的作业</a>
+                <a id="discuss" href="./discuss.html" class="list-group-item a-align">班级讨论</a>
             </div>
         </div>
     </div>
@@ -249,19 +220,34 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 </body>
 
 <script src="/layui/layui.js" type="text/javascript"></script>
 <script>
     layui.use('element', function () {
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-
         //监听导航点击
         element.on('nav(demo)', function (elem) {
-            //console.log(elem)
             layer.msg(elem.text());
         });
     });
+</script>
+<script>
+    var href = window.location.href;
+    var s = href.substring(href.lastIndexOf("/"),href.length);
+    console.log(s)
+    switch (s) {
+        case "/classmate-2.html":
+            $("#classmate").addClass("active");
+            break;
+        case "/worklist-2.html":
+            $("#myHomework").addClass("active");
+            break;
+        case "/discuss.html":
+            $("#discuss").addClass("active");
+            break;
+        default:
+            break;
+    }
 </script>
 </html>

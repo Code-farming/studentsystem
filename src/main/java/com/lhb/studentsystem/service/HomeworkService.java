@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 public class HomeworkService {
 
@@ -17,7 +18,7 @@ public class HomeworkService {
         homeworkMapper.addHomework(homework);
     }
 
-    public List<Homework> findAllWork() {
-        return homeworkMapper.findAllWork();
+    public List<Homework> findAllWorkByUserId(String userId) {
+       return homeworkMapper.findWorkByUserId(userId);
     }
 }

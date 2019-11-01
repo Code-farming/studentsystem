@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 
 public class FileDownLoad {
 
-    public static void downloadFile(File file, String s, HttpServletResponse response) {
+    public static void downloadFile(File file, String contentType, HttpServletResponse response) {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             ServletOutputStream outputStream = response.getOutputStream();
@@ -21,7 +21,7 @@ public class FileDownLoad {
             }
             System.out.println("下载成功");
             response.setStatus(200);
-            response.setContentType(s);
+            response.setContentType(contentType);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("下载失败");

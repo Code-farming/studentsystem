@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("admin")
 public class PublicController {
     @Autowired
     private HomeworkService homeworkService;
