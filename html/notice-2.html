@@ -6,51 +6,51 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="layui/css/layui.css">
-    <link rel="stylesheet" href="css/workcss.css">
 
+    <!--layui-->
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <!--markdown-->
+    <link rel="stylesheet" href="css/editormd.min.css">
+    <link rel="stylesheet" href="css/editormd.preview.min.css">
     <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/editormd.min.js"></script>
+    <script src="js/lib/marked.min.js"></script>
+    <script src="js/lib/prettify.min.js"></script>
+
     <script src="js/bootstrap.min.js"></script>
     <script src="js/nav.js"></script>
-
 </head>
 <body>
 <script>
-    var json = window.sessionStorage.getItem("user");
-    var user = JSON.parse(json);
-    var id = user.id;
     $.ajax({
         type: "GET",
-        url: "ssm/user/allWork?userId=" + id,
+        url: "ssm/user/findNotice",
         dataType: "json",
         success: function (data) {
+            console.log(data);
             if (data.code == 200) {
-                $("#work").empty();
+                $("#notice").empty();
                 var html = '';
-                $.each(data.data, function (index, work) {
-                    var workId = work.homeWork['id'];
-                    var status = work.userWork['status'];
-                    if (status == 'N') {
-                        status = "未提交";
-                    } else {
-                        status = "已提交";
-                    }
-                    html += ' <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">' +
-                        '                        <div class="work-showDiv">' +
-                        '                            <strong><span style="font-size: 18px">' + work.homeWork['title'] + '</span></strong><br><br>' +
-                        '                            <span>创建时间:</span><span>' + work.homeWork['createTime'] + '</span><br><br>' +
-                        '                            <span>截止时间:</span><span>' + work.homeWork['deadline'] + '</span><br><br>' +
-                        '                            <span>作业状态:</span><span>' + status + '</span><br><br>' +
-                        '                            <div class="homework-bottom">' +
-                        '                                   <a class="Btn-style" href="./workdesc-2.html?workId=' + workId + '">' +
-                        '                                   <span>查看</span>' +
-                        '                                   </a>' +
-                        '                       </div>' +
-                        '      </div>' +
-                        '</div>'
+                $.each(data.data, function (index, noticeDTO) {
+                    var name = noticeDTO['name'];
+                    var time = noticeDTO.notice['createTime'];
+                    var type = noticeDTO.notice['type'];
+                    var content = noticeDTO.notice['content'];
+                    html += '<div style="margin: 15px 15px;border: 1px solid;border-radius: 3px">' +
+                        '           <span style="font-size: 20px">发起人:</span><span>' + name + '</span>' +
+                        '           <span style="float: right;font-size: 20px">' + type + '</span>' +
+                        '           <div style="padding: 20px 20px">' +
+                        '               <div id="noticeContent-view">' +
+                        '                   <textarea id="WorkContent" style="display:none;"></textarea>' +
+                        '               </div>' +
+                        '           <script type="text/javascript">' +
+                        '               $(function () {' +
+                        '                    editormd.markdownToHTML("noticeContent-view", {});' +
+                        '               });' +
+                        ''
 
-                });
-                $("#work").html(html);
+
+                })
             }
         }
     })
@@ -115,36 +115,35 @@
         </div>
     </div>
 </nav>
-<!--主体页面-->
+<!--iframe-->
 <div class="container-fluid main">
     <div class="row">
-        <!--展示作业信息-->
-        <div class="col-lg-9 col-md-10 col-sm-12 col-xs-12">
+        <!--侧边栏-->
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 nav-padding">
             <div style="margin-top: 20px">
-                <span class="layui-breadcrumb">
-                    <a style="font-size:20px" href="javascript:;">全部作业</a>
-                    <a style="font-size:20px" href="javascript:;">已交作业</a>
-                    <a style="font-size:20px" href="javascript:;">未交作业</a>
-                </span>
-            </div>
-            <hr>
-            <div style="height: 700px;margin: 20px 0px 0px 10px;">
-                <div id="work">
+                <h2><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+                    班级通知
+                </h2>
+                <div id="notice">
+                    <div style="margin: 15px 15px;border: 1px solid;border-radius: 3px">
+                        <span style="font-size: 20px">发起人:</span>
+                        <span style="float: right;font-size: 20px">紧急通知</span>
+                        <div style="padding: 20px 20px">
+                            <div id="noticeContent-view">
+                                <textarea id="WorkContent" style="display:none;"></textarea>
+                            </div>
+                            <script type="text/javascript">
+                                $(function () {
+                                    editormd.markdownToHTML("noticeContent-view", {});
+                                });
+                            </script>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!--侧边展示-->
-        <div class="col-lg-3 col-md-2 col-md-12 col-xs-12 nav-right">
-            <div style="text-align: center">
-                <img src="images/logo.png" alt="我的班级" class="img-circle" style="height: 150px;width: 150px;">
-            </div>
-            <div class="list-group">
-                <a id="classmate" href="classmate-2.html" class="list-group-item a-align">
-                    班级成员
-                </a>
-                <a id="myHomework" href="./worklist-2.html" class="list-group-item a-align">我的作业</a>
-                <a id="discuss" href="./discuss.html" class="list-group-item a-align">班级讨论</a>
-            </div>
+        <div class="col-lg-3 col-md-12 col-md-12 col-xs-12 nav-right">
+
         </div>
     </div>
 </div>
@@ -220,34 +219,7 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-</body>
 
 <script src="/layui/layui.js" type="text/javascript"></script>
-<script>
-    layui.use('element', function () {
-        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-        //监听导航点击
-        element.on('nav(demo)', function (elem) {
-            layer.msg(elem.text());
-        });
-    });
-</script>
-<script>
-    var href = window.location.href;
-    var s = href.substring(href.lastIndexOf("/"),href.length);
-    console.log(s)
-    switch (s) {
-        case "/classmate-2.html":
-            $("#classmate").addClass("active");
-            break;
-        case "/worklist-2.html":
-            $("#myHomework").addClass("active");
-            break;
-        case "/discuss.html":
-            $("#discuss").addClass("active");
-            break;
-        default:
-            break;
-    }
-</script>
+</body>
 </html>

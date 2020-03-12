@@ -21,7 +21,7 @@ public class ResponseResult {
     }
 
 
-    public static ResponseResult Success(int code, String msg, Object data) {
+      public static ResponseResult Success(int code, String msg, Object data) {
         return ResponseResult.builder().code(code).msg(msg).data(data).build();
     }
 

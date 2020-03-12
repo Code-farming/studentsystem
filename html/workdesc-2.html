@@ -74,7 +74,7 @@
                     var length = originalNameList.length;
                     var html = '';
                     for (var i = 0; i < length - 1; i++) {
-                        html += '<span class="glyphicon glyphicon-file"></span><a href="ssm/file/getFile/' + fromId + '/' +fileList[i]+'/'+ originalNameList[i] + '"><span>' + originalNameList[i] + '</span></a>'
+                        html += '<span class="glyphicon glyphicon-file"></span><a href="ssm/file/getFile/' + fromId + '/' + fileList[i] + '/' + originalNameList[i] + '"><span>' + originalNameList[i] + '</span></a>'
                     }
                     $("#workFile").append(html);
                 } else {
@@ -123,11 +123,11 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="./public.html">发布作业</a></li>
-                        <li><a href="#">发布通知</a></li>
+                        <li><a href="./public-notice.html">发布通知</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="notice.html">通知</a>
+                    <a href="notice-2.html">通知</a>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -179,16 +179,16 @@
                 <h3><span class="glyphicon glyphicon-bell"></span>作业的格式要求: <span id="suffix"></span></h3>
             </div>
 
-            <!--打包作业-->
-            <div>
-                <a></a>
+            <!--提交作业-->
+            <div class="layui-upload" style="float: right; margin: 20px 30px">
+                <button type="button" class="layui-btn layui-btn-normal" id="test8">选择作业</button>
+                <button type="button" class="layui-btn" id="test9" style="margin-right: 30px">提交作业</button>
             </div>
-
 
         </div>
         <!--作业指南-->
         <div class="col-lg-3 col-md-12 col-md-12 col-xs-12 nav-right">
-            <h3>11111111111</h3><br>
+            <h3>作业提交指南</h3><br>
             • 请您认真阅读作业要求，并按时提交作业<br><br>
             • 作业格式: 提交作业的时候，请您按照作业的要求提交您的作业 <br><br>
             • 作业时间要求: 请您在规定的时间内提交作业，否则作业过期将无法提交<br><br>
@@ -345,10 +345,16 @@
         var workId = sessionStorage.getItem("workId");
         $.ajax({
             type: "GET",
-            url: "ssm/admin/getWorkZip?fromId=" + fromId + "&title=" + title+"&workId="+workId,
+            url: "ssm/admin/getWorkZip?fromId=" + fromId + "&title=" + title + "&workId=" + workId,
             dataType: "json",
             success: function (data) {
-
+                if (data.code == 200) {
+                    var packName = data.data;
+                    $("#getWorkPack").empty();
+                    $("#getWorkPack").append(
+                        '<a href="ssm/admin/getworkpack/'+packName+'?workId='+workId+'&fromId='+fromId+'&title='+title+'"><span>'+packName +'</span></a>'
+                    )
+                }
             }
         })
     }

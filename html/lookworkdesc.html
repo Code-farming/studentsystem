@@ -6,8 +6,18 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
+
+    <!--layui-->
     <link rel="stylesheet" href="layui/css/layui.css">
-    <link rel="stylesheet" href="css/workcss.css">
+
+    <!--markdown-->
+    <link rel="stylesheet" href="css/editormd.min.css">
+    <link rel="stylesheet" href="css/editormd.preview.min.css">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/editormd.min.js"></script>
+    <script src="js/lib/marked.min.js"></script>
+    <script src="js/lib/prettify.min.js"></script>
+
 
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -15,43 +25,68 @@
 
 </head>
 <body>
-<script>
+
+<script type="text/javascript">
+    // 获取userId
     var json = window.sessionStorage.getItem("user");
     var user = JSON.parse(json);
-    var id = user.id;
+    var userId = user.id;
+
+    // 获取url的参数
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (false);
+    }
+
+    var workId = getQueryVariable("workId");
+    <!--通过ajax get请求，参数为userId，workId访问数据-->
     $.ajax({
         type: "GET",
-        url: "ssm/user/allWork?userId=" + id,
+        url: "ssm/user/findWork?userId=" + userId + "&workId=" + workId,
         dataType: "json",
         success: function (data) {
             if (data.code == 200) {
-                $("#work").empty();
-                var html = '';
-                $.each(data.data, function (index, work) {
-                    var workId = work.homeWork['id'];
-                    var status = work.userWork['status'];
-                    if (status == 'N') {
-                        status = "未提交";
-                    } else {
-                        status = "已提交";
+                var obj = data.data;
+                var title = obj.homeWork['title'];
+                sessionStorage.setItem("title", title);
+                var workId = obj.homeWork['id'];
+                sessionStorage.setItem("workId", workId)
+                var files = obj.homeWork['files'];
+                var originalName = obj.homeWork['originalName'];
+                var fromId = obj.homeWork['fromId'];
+                sessionStorage.setItem("fromId", fromId);
+                var userwork = obj.userWork['file'];
+                if (userwork != null && userwork != '') {
+                    $("#test9").text("修改作业")
+                }
+                $("#workTitle").html(title)
+                $("#WorkContent").text(obj.homeWork['content'])
+                if (files != null && originalName != null) {
+                    var fileList = files.split(';');
+                    var originalNameList = originalName.split(';');
+                    var length = originalNameList.length;
+                    var html = '';
+                    for (var i = 0; i < length - 1; i++) {
+                        html += '<span class="glyphicon glyphicon-file"></span><a href="ssm/file/getFile/' + fromId + '/' + fileList[i] + '/' + originalNameList[i] + '"><span>' + originalNameList[i] + '</span></a>'
                     }
-                    html += ' <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">' +
-                        '                        <div class="work-showDiv">' +
-                        '                            <strong><span style="font-size: 18px">' + work.homeWork['title'] + '</span></strong><br><br>' +
-                        '                            <span>创建时间:</span><span>' + work.homeWork['createTime'] + '</span><br><br>' +
-                        '                            <span>截止时间:</span><span>' + work.homeWork['deadline'] + '</span><br><br>' +
-                        '                            <span>作业状态:</span><span>' + status + '</span><br><br>' +
-                        '                            <div class="homework-bottom">' +
-                        '                                   <a class="Btn-style" href="./workdesc-2.html?workId=' + workId + '">' +
-                        '                                   <span>查看</span>' +
-                        '                                   </a>' +
-                        '                       </div>' +
-                        '      </div>' +
-                        '</div>'
-
-                });
-                $("#work").html(html);
+                    $("#workFile").append(html);
+                } else {
+                    $("#down").remove();
+                }
+                var format = obj.homeWork['format'];
+                $("#suffix").html(format);
+                sessionStorage.setItem("format", format);
             }
+        },
+        error: function () {
+
         }
     })
 </script>
@@ -115,39 +150,54 @@
         </div>
     </div>
 </nav>
-<!--主体页面-->
+
+
+<!--主体-->
 <div class="container-fluid main">
     <div class="row">
-        <!--展示作业信息-->
-        <div class="col-lg-9 col-md-10 col-sm-12 col-xs-12">
-            <div style="margin-top: 20px">
-                <span class="layui-breadcrumb">
-                    <a style="font-size:20px" href="javascript:;">全部作业</a>
-                    <a style="font-size:20px" href="javascript:;">已交作业</a>
-                    <a style="font-size:20px" href="javascript:;">未交作业</a>
-                </span>
+        <!--作业详情-->
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 nav-padding">
+            <!--作业标题-->
+            <h2 id="workTitle"></h2>
+            <!--作业详情-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="workContent-view">
+                <textarea id="WorkContent" style="display:none;"></textarea>
             </div>
-            <hr>
-            <div style="height: 700px;margin: 20px 0px 0px 10px;">
-                <div id="work">
+            <script type="text/javascript">
+                $(function () {
+                    editormd.markdownToHTML("workContent-view", {});
+                });
+            </script>
+            <!--作业模板下载-->
+            <div id="down" style="padding: 10px 20px">
+                <h3>附件下载</h3>
+                <div id="workFile" style="margin-top: 10px;font-size: 20px">
                 </div>
             </div>
+            <!--作业格式要求-->
+            <div style="padding: 10px 20px; color: red">
+                <h3><span class="glyphicon glyphicon-bell"></span>作业的格式要求: <span id="suffix"></span></h3>
+            </div>
+
+            <!--打包作业-->
+            <div>
+                <button onclick="getWorkZip()">打包作业</button>
+                <div id="getWorkPack"></div>
+            </div>
+
+
         </div>
-        <!--侧边展示-->
-        <div class="col-lg-3 col-md-2 col-md-12 col-xs-12 nav-right">
-            <div style="text-align: center">
-                <img src="images/logo.png" alt="我的班级" class="img-circle" style="height: 150px;width: 150px;">
-            </div>
-            <div class="list-group">
-                <a id="classmate" href="classmate-2.html" class="list-group-item a-align">
-                    班级成员
-                </a>
-                <a id="myHomework" href="./worklist-2.html" class="list-group-item a-align">我的作业</a>
-                <a id="discuss" href="./discuss.html" class="list-group-item a-align">班级讨论</a>
-            </div>
+        <!--作业指南-->
+        <div class="col-lg-3 col-md-12 col-md-12 col-xs-12 nav-right">
+            <h3>作业获取指南</h3><br>
+            • 请您认真阅读作业要求，并按时提交作业<br><br>
+            • 作业格式: 提交作业的时候，请您按照作业的要求提交您的作业 <br><br>
+            • 作业时间要求: 请您在规定的时间内提交作业，否则作业过期将无法提交<br><br>
         </div>
     </div>
 </div>
+
+
 <!--弹出学生信息框-->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -220,34 +270,95 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-</body>
 
 <script src="/layui/layui.js" type="text/javascript"></script>
 <script>
-    layui.use('element', function () {
-        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-        //监听导航点击
-        element.on('nav(demo)', function (elem) {
-            layer.msg(elem.text());
-        });
-    });
+    layui.use('upload', function () {
+
+        var $ = layui.jquery
+            , upload = layui.upload
+            , layer = layui.layer;
+        //判断文件类型
+        var format = sessionStorage.getItem("format");
+        var fromId = sessionStorage.getItem("fromId");
+        var title = sessionStorage.getItem("title");
+        var workId = sessionStorage.getItem("workId");
+        var json = window.sessionStorage.getItem("user");
+        var user = JSON.parse(json);
+        if (format == "zip") {
+            upload.render({
+                elem: '#test8'
+                , url: '/ssm/user/uploadWork'
+                , data: {
+                    fromId: fromId,
+                    title: title,
+                    userId: user.id,
+                    username: user.username,
+                    workId: workId
+                }
+                , auto: false
+                , multiple: false
+                , bindAction: '#test9'
+                , accept: 'file'  //只允许上传文件
+                , exts: 'zip|rar|7z'  //只允许上传压缩包
+                , done: function (data) {
+                    if (data.code == 200) {
+                        layer.alert(data.msg)
+                        window.location.reload()
+                    }
+                }
+            });
+        } else {
+            //拖拽上传
+            upload.render({
+                elem: '#test8'
+                , url: '/ssm/user/uploadWork'
+                , data: {
+                    fromId: fromId,
+                    title: title,
+                    userId: user.id,
+                    username: user.username,
+                    workId: workId
+                }
+                , auto: false
+                , multiple: false
+                , bindAction: '#test9'
+                , accept: 'file'  //只允许上传文件
+                , exts: 'doc|docx'  //只允许上传压缩包
+                , done: function (data) {
+                    if (data.code == 200) {
+                        layer.alert(data.msg)
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000)
+                    }
+
+                }
+            });
+        }
+
+    })
 </script>
 <script>
-    var href = window.location.href;
-    var s = href.substring(href.lastIndexOf("/"),href.length);
-    console.log(s)
-    switch (s) {
-        case "/classmate-2.html":
-            $("#classmate").addClass("active");
-            break;
-        case "/worklist-2.html":
-            $("#myHomework").addClass("active");
-            break;
-        case "/discuss.html":
-            $("#discuss").addClass("active");
-            break;
-        default:
-            break;
+    getWorkZip = function () {
+        var title = sessionStorage.getItem("title");
+        var fromId = sessionStorage.getItem("fromId");
+        var workId = sessionStorage.getItem("workId");
+        $.ajax({
+            type: "GET",
+            url: "ssm/admin/getWorkZip?fromId=" + fromId + "&title=" + title + "&workId=" + workId,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    var packName = data.data;
+                    $("#getWorkPack").empty();
+                    $("#getWorkPack").append(
+                        '<a href="ssm/admin/getworkpack/' + packName + '?workId=' + workId + '&fromId=' + fromId + '&title=' + title + '"><span>' + packName + '</span></a>'
+                    )
+                }
+            }
+        })
     }
 </script>
+</body>
 </html>

@@ -1,60 +1,27 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>班级管理系统</title>
+    <title>发布作业</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="layui/css/layui.css">
-    <link rel="stylesheet" href="css/workcss.css">
 
+    <!--layui-->
+    <link rel="stylesheet" href="layui/css/layui.css">
+
+    <!--markdown-->
+    <link rel="stylesheet" href="css/editormd.min.css">
+    <link rel="stylesheet" href="css/editormd.preview.min.css">
     <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/editormd.min.js"></script>
+
     <script src="js/bootstrap.min.js"></script>
     <script src="js/nav.js"></script>
 
+
 </head>
 <body>
-<script>
-    var json = window.sessionStorage.getItem("user");
-    var user = JSON.parse(json);
-    var id = user.id;
-    $.ajax({
-        type: "GET",
-        url: "ssm/user/allWork?userId=" + id,
-        dataType: "json",
-        success: function (data) {
-            if (data.code == 200) {
-                $("#work").empty();
-                var html = '';
-                $.each(data.data, function (index, work) {
-                    var workId = work.homeWork['id'];
-                    var status = work.userWork['status'];
-                    if (status == 'N') {
-                        status = "未提交";
-                    } else {
-                        status = "已提交";
-                    }
-                    html += ' <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">' +
-                        '                        <div class="work-showDiv">' +
-                        '                            <strong><span style="font-size: 18px">' + work.homeWork['title'] + '</span></strong><br><br>' +
-                        '                            <span>创建时间:</span><span>' + work.homeWork['createTime'] + '</span><br><br>' +
-                        '                            <span>截止时间:</span><span>' + work.homeWork['deadline'] + '</span><br><br>' +
-                        '                            <span>作业状态:</span><span>' + status + '</span><br><br>' +
-                        '                            <div class="homework-bottom">' +
-                        '                                   <a class="Btn-style" href="./workdesc-2.html?workId=' + workId + '">' +
-                        '                                   <span>查看</span>' +
-                        '                                   </a>' +
-                        '                       </div>' +
-                        '      </div>' +
-                        '</div>'
-
-                });
-                $("#work").html(html);
-            }
-        }
-    })
-</script>
 <!--导航栏-->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -115,39 +82,62 @@
         </div>
     </div>
 </nav>
-<!--主体页面-->
+<!--提交通知的表单-->
 <div class="container-fluid main">
-    <div class="row">
-        <!--展示作业信息-->
-        <div class="col-lg-9 col-md-10 col-sm-12 col-xs-12">
-            <div style="margin-top: 20px">
-                <span class="layui-breadcrumb">
-                    <a style="font-size:20px" href="javascript:;">全部作业</a>
-                    <a style="font-size:20px" href="javascript:;">已交作业</a>
-                    <a style="font-size:20px" href="javascript:;">未交作业</a>
-                </span>
-            </div>
+    <div class="row"  style="padding: 15px 15px">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发布通知</h2>
             <hr>
-            <div style="height: 700px;margin: 20px 0px 0px 10px;">
-                <div id="work">
+
+            <form class="layui-form layui-form-pane">
+                <!--发布人Id，隐藏传值-->
+                <input type="hidden" id="fromId" name="fromId">
+
+                <div class="layui-form-item layui-form-text" id="notice-editor">
+                    <textarea name="content" id="content" style="display:none;"></textarea>
                 </div>
-            </div>
+                <script type="text/javascript">
+                    $(function () {
+                        var editor = editormd("notice-editor", {
+                            width: "100%",
+                            height: 350,
+                            path: "/js/lib/",
+                            delay: 2000,
+                            watch: false,
+                            placeholder: "通知内容（必填，请参照右边提示）:",
+                            imageUpload: true,
+                            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                            imageUploadURL: "/ssm/file/uploadImage",
+                            saveHTMLToTextarea : true
+                        });
+                    });
+                </script>
+                <!--选择通知的类型-->
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">通知类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="type" value="一般通知" title="一般通知" checked="">
+                        <input type="radio" name="type" value="紧急通知" title="紧急通知">
+                    </div>
+                </div>
+                <!--提交按钮-->
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="float: right;">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <!--侧边展示-->
-        <div class="col-lg-3 col-md-2 col-md-12 col-xs-12 nav-right">
-            <div style="text-align: center">
-                <img src="images/logo.png" alt="我的班级" class="img-circle" style="height: 150px;width: 150px;">
-            </div>
-            <div class="list-group">
-                <a id="classmate" href="classmate-2.html" class="list-group-item a-align">
-                    班级成员
-                </a>
-                <a id="myHomework" href="./worklist-2.html" class="list-group-item a-align">我的作业</a>
-                <a id="discuss" href="./discuss.html" class="list-group-item a-align">班级讨论</a>
-            </div>
+        <div class="col-lg-3 col-md-12 col-md-12 col-xs-12">
+            <h3>通知发起指南</h3><br>
+            • 通知内容: 请您客观的描述一下你想要发的通知，通知一经发送，全班的同学都可以查看到<br><br>
+            • 通知类型: 请您选择一个通知类型<br><br>
         </div>
     </div>
 </div>
+
+
 <!--弹出学生信息框-->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -220,34 +210,49 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-</body>
 
 <script src="/layui/layui.js" type="text/javascript"></script>
+
 <script>
-    layui.use('element', function () {
-        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
-        //监听导航点击
-        element.on('nav(demo)', function (elem) {
-            layer.msg(elem.text());
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+        //获取发布人的信息，将发布人的Id通过隐藏的表单传给后台
+        var json = window.sessionStorage.getItem("user");
+        var user = JSON.parse(json);
+        var fromId = user.id;
+        $("#fromId").val(fromId)
+        //监听提交
+        form.on('submit(demo1)', function (data) {
+            //对通知内容进行的判空，若为空则弹出提示框
+            var content = $("#content").val();
+            if ($.trim(content) == '' || $.trim(content).length <= 0) {
+                layer.alert("通知内容不能为空");
+                return false;
+            }
+            var option = JSON.stringify(data.field);
+            $.ajax({
+                url: '/ssm/admin/publicNotice',
+                method: 'post',
+                dataType: 'json',
+                data: option,
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.alert(data.msg);
+                        setTimeout(function () {
+                            window.location.href = 'notice-2.html';
+                        }, 2000)
+                    }
+                },
+                error: function () {
+                    layer.alert(data.msg);
+                }
+            })
+            return false;
         });
     });
 </script>
-<script>
-    var href = window.location.href;
-    var s = href.substring(href.lastIndexOf("/"),href.length);
-    console.log(s)
-    switch (s) {
-        case "/classmate-2.html":
-            $("#classmate").addClass("active");
-            break;
-        case "/worklist-2.html":
-            $("#myHomework").addClass("active");
-            break;
-        case "/discuss.html":
-            $("#discuss").addClass("active");
-            break;
-        default:
-            break;
-    }
-</script>
+
+</body>
 </html>

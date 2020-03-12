@@ -1,12 +1,15 @@
 package com.lhb.studentsystem.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.lhb.studentsystem.dto.NoticeDTO;
 import com.lhb.studentsystem.dto.UpdatePassDTO;
 import com.lhb.studentsystem.dto.UserDTO;
 import com.lhb.studentsystem.mapper.UserMapper;
+import com.lhb.studentsystem.model.Notice;
 import com.lhb.studentsystem.model.User;
 import com.lhb.studentsystem.result.ResponseResult;
 import com.lhb.studentsystem.result.TableResult;
+import com.lhb.studentsystem.service.NoticeService;
 import com.lhb.studentsystem.service.UserService;
 import com.lhb.studentsystem.service.UserWorkService;
 import com.lhb.studentsystem.utils.FileUpload;
@@ -25,6 +28,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserWorkService userWorkService;
+    @Autowired
+    private NoticeService noticeService;
     @Autowired
     private UserMapper userMapper;
 
@@ -112,4 +117,19 @@ public class UserController {
         return ResponseResult.Error();
     }
 
+    @GetMapping("/findNotice")
+    public ResponseResult findNotice(){
+        List<Notice> noticeList = noticeService.findAllNotice();
+        List<NoticeDTO> list=new ArrayList<>();
+        for (Notice notice : noticeList) {
+            String fromId = notice.getFromId();
+            User user = userService.getUser(fromId);
+            String username = user.getUsername();
+            NoticeDTO noticeDTO = new NoticeDTO();
+            noticeDTO.setName(username);
+            noticeDTO.setNotice(notice);
+            list.add(noticeDTO);
+        }
+        return ResponseResult.Success(200,"查看通知成功",list);
+    }
 }
